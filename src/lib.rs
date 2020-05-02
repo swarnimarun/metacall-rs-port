@@ -24,7 +24,7 @@
 /*************************************************************************/
 
 mod defer;
-use defer::*;
+use defer::defer;
 
 pub mod metacall {
 	use std::ffi::CString;
@@ -35,7 +35,7 @@ pub mod metacall {
 		c_void,
 		c_float,
 		c_double
-	};	
+	};
 
 	#[link(name = "metacall")] // requires libmetacall to be in $PATH
 	extern "C" {
@@ -74,8 +74,8 @@ pub mod metacall {
 		Str(String), // from *const u8 (null terminated)
 		Array(Vec<Any>), // from *mut *mut c_void
 		Buffer(Vec<u8>), // from *const u8 (non-null terminated) (raw binary data)
-		Pointer(Box<Any>) // from *mut c_void
-		// METACALL_FUNCTION	
+		Pointer(Box<Any>), // from *mut c_void
+		Function(Box<fn(Any) -> Any>) // from a C function pointer
 		// METACALL_FUTURE
 	}
 	impl From<c_short> for Any {
